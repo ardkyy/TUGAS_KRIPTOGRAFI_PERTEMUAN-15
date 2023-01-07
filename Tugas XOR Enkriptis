@@ -1,1 +1,19 @@
+def encrypt(text, key):
+  # Ubah teks menjadi bentuk biner
+  binary_text = ''.join(format(ord(i), 'b') for i in text)
+  
+  # Inisialisasi variabel untuk menyimpan hasil enkripsi
+  encrypted_text = ""
+  
+  # Lakukan XOR terhadap setiap bit dari teks yang sudah dikonversi dengan setiap bit dari kunci
+  for i in range(len(binary_text)):
+    encrypted_text += str(int(binary_text[i]) ^ int(key[i % len(key)]))
+    
+  return encrypted_text
 
+# Contoh penggunaan fungsi encrypt
+text = "Saya harus lulus tepat waktu dan menjadi sarjana"
+key = "01010101010101010101010101010101"
+
+encrypted_text = encrypt(text, key)
+print(encrypted_text)
