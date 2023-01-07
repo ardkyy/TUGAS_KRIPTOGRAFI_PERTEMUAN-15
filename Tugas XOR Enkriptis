@@ -1,19 +1,45 @@
-def encrypt(text, key):
-  # Ubah teks menjadi bentuk biner
-  binary_text = ''.join(format(ord(i), 'b') for i in text)
-  
-  # Inisialisasi variabel untuk menyimpan hasil enkripsi
-  encrypted_text = ""
-  
-  # Lakukan XOR terhadap setiap bit dari teks yang sudah dikonversi dengan setiap bit dari kunci
-  for i in range(len(binary_text)):
-    encrypted_text += str(int(binary_text[i]) ^ int(key[i % len(key)]))
-    
-  return encrypted_text
+#include <iostream>
+#include <string>
 
-# Contoh penggunaan fungsi encrypt
-text = "Saya harus lulus tepat waktu dan menjadi sarjana"
-key = "01010101010101010101010101010101"
+std::string rc4(std::string data, std::string key) {
+  // Inisialisasi state dengan semua bilangan bulat dari 0 hingga 255
+  int state[256];
+  for (int i = 0; i < 256; i++) {
+    state[i] = i;
+  }
+  
+  // Inisialisasi variabel untuk menyimpan hasil enkripsi
+  std::string encrypted_data = "";
+  
+  // Inisialisasi index
+  int i = 0;
+  int j = 0;
+  
+  // Mencampur state sesuai dengan kunci
+  for (i = 0; i < 256; i++) {
+    j = (j + state[i] + key[i % key.size()]) % 256;
+    std::swap(state[i], state[j]);
+  }
+  
+  // Lakukan XOR terhadap setiap karakter dari data dengan stream cipher yang dihasilkan dari state yang telah dicampur
+  i = 0;
+  j = 0;
+  for (char c : data) {
+    i = (i + 1) % 256;
+    j = (j + state[i]) % 256;
+    std::swap(state[i], state[j]);
+    encrypted_data += c ^ state[(state[i] + state[j]) % 256];
+  }
+  
+  return encrypted_data;
+}
 
-encrypted_text = encrypt(text, key)
-print(encrypted_text)
+int main() {
+  std::string text = "Saya harus lulus tepat waktu dan menjadi sarjana";
+  std::string key = "secretkey";
+  
+  std::string encrypted_text = rc4(text, key);
+  std::cout << encrypted_text << std::endl;
+  
+  return 0;
+}
